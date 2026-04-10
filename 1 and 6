@@ -1,0 +1,37 @@
+---
+title: "1-6_group_project"
+author: "Zach Lackner"
+date: "2026-04-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. Collaboration Plan
+
+**Communication:** We primarily use **email** for formal updates and **messages** for quick, real-time communication as needed.
+
+**Simultaneous Collaboration:** For tasks requiring real-time teamwork, we will utilize **Zoom** to work together on the project together.
+
+**Check-ins:** **Weekly meetings** are scheduled every **Thursday via Zoom** if the project status requires it. Additional meetings or collaborative sessions will be planned as required to meet deadlines.
+
+
+
+
+## 6. Inference Method
+We will use **hypothesis testing for the difference of two means (a Welch’s two-sample t-test)**, a method appropriate for comparing the average broadband usage rates between two independent groups (geographic locations).
+
+* **Cause Variable:** Location (categorical, independent grouping variable: Los Angeles County vs. New York City).
+* **Effect Variable:** Broadband Usage Rate (continuous response variable, measured as the proportion of households with a broadband subscription).
+
+**Steps:**
+1. **Compute the observed difference** in sample means (Point Estimate).
+2. **Calculate the test statistic**
+3. **Determine degrees of freedom** using the Welch formula
+4. **Compute the p-value** under the null hypothesis ($H_0: \mu_{LA} - \mu_{NYC} = 0$).
+
+**Interpretation:**
+* **Reject $H_0$:** If $p < 0.05$, conclude a significant difference exists in broadband usage rates between the groups.
+* **Fail to Reject $H_0$:** If $p \geq 0.05$, conclude no significant difference exists in broadband usage rates between the groups.
