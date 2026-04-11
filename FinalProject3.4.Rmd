@@ -1,0 +1,26 @@
+## 3. Research Question
+
+Is there a difference in the average broadband usage and average error range between Los Angeles and New York City?
+
+
+## 4. Data Description
+
+## 4.1 Data Collection
+
+- The Broadband Usage Percentages Data Set is owned by Microsoft. The data is available at the USBroadbandUsagePercentages repository, and can be used for analyzing, understanding, improving, or addressing problems related to broadband access around the country. 
+
+- The Broadband Usage Percentages Data Set is created from combined and anonymized data that Microsoft collects. The collected data is part of ongoing work that strives to provide a better view of broadband usage percentages within households by zip code.
+
+- The repository doesn't contain much info about how the data was collected, but it tells us what it measures. This data set has estimates of broadband usage, error ranges, zip codes, and more. The error range that the original researchers added is to ensure that participants privacy is protected.
+
+## 4.2 Key Vairables
+- BroadbandUsage: Estimates the percentage of households with broadband usage in each zip code.
+
+- ErrorRange: Due to privacy concerns ErrorRange gives an uncertainty estimate for each zip code.
+
+## Data Structure and Sample Size
+- Single Row Representation: One row of the data set shows the estimates of both the broadband usage and error range for a specific zip code.
+
+- Population Representation: The population were interested in is the data from the entire country of the United States. To answer our research question we will pull a sample from the cities Los Angeles and New York. 
+
+- Sample size: The sample size of every zip code from NY and LA, each representing a massive amount of data in the region. There are 281 zip codes in Los Angeles county and 206 zip codes in New York City regions (New York, Kings, Queens, Bronx, Richmond).
