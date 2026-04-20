@@ -1,0 +1,154 @@
+---
+title: "Stat 240 project draft presentation"
+author: "Zach Lackner"
+date: "2026-04-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+library(tidyverse)
+data <- read_csv("../data/broadband_data_zipcode.csv")
+
+cleaned_data <- data %>%
+  filter((ST == "CA" & `COUNTY NAME` == "Los Angeles") |
+         (ST == "NY" & `COUNTY NAME` %in% c("Bronx", "Kings", "New York", "Queens", "Richmond"))) %>%
+  mutate(Location = ifelse(ST == "CA", "Los Angeles", "New York City")) %>%
+  select(Location, `BROADBAND USAGE`, `ERROR RANGE (MAE)(+/-)`) %>%
+  rename(usage = `BROADBAND USAGE`, 
+         error_range = `ERROR RANGE (MAE)(+/-)`) %>%
+  drop_na(usage, error_range)
+
+```
+
+# Introduction
+
+The internet is becoming one of, if not the most important piece of the world today. Since the birth of the internet, there is a rise in how many people have internet access and a rise in how much they are using. 
+
+**Question of Interest**: Is there a significant difference in the average broadband usage rates between households in Los Angeles and New York City?
+
+We find strong evidence that the average broadband usage rates differ. The sample mean for LA is higher, suggesting LA likely has higher usage.
+
+# Background:
+## Data Sources
+
+* Raw data: The dataset ised in this analysis was sourced from [Microsoft Open Source](https://microsoft.github.io/data-for-society/dataset?d=United-States-Broadband-Usage-Percentages-Dataset), collected and Released in April 2020 and updated in Decemeber 2020. Also, calculated with a fixed broadband speed of 25 mbs down and 3 mbs up
+
+## Variables:
+* **ST**: Represents the state corresponding to the data
+* **County**: Represents the county in the state
+* **BROADBAND USAGE**: Percent of people per county that use the internet at broadband speeds based on the fixed broadband speed
+* **ERROR RANGE (MAE)(+/-)**: Uncertainty estimate for each ZIP code's usage percentage, provided for privacy protection
+
+## Data Structure:
+* **Rows**: Each Row Represents the estimates of both the broadband usage and error range for a specific ZIP code
+* **Sample Size**: The sample size consists of 462 ZIP codes in total. 281 from Los Angeles and 181 from New York City(Bronx, Kings, New York, Queens, and Richmond)
+
+## Data Cleaning and Processing:
+The dataset was processed to ensure accuracy and focus. We filtered the raw national data specifically for Los Angeles County, CA and the five counties comprising New York City, NY. Missing values were removed to ensure a stable basis for hypothesis testing. The cleaned dataset was grouped by location to calculate the mean, standard deviation, and sample size for each group.
+
+```{r visualization, echo = FALSE}
+ggplot(cleaned_data, aes(x = usage, fill = Location)) +
+  geom_histogram(bins = 25, color = "white", show.legend = FALSE) +
+  theme_minimal() +
+  labs(x = "Broadband Usage Percentage", y = "Number of ZIP Codes") +
+  scale_fill_manual(values = c("steelblue", "darkorange")) +
+  # This line puts the two graphs in separate boxes next to each other
+  facet_wrap(~Location)
+
+```
+
+
+
+
+* LA Distribution(Left): The data is heavily concentrated on the right side of the scale. A vast majority of ZIP codes in Los Angeles show high broadband usage, with a prominent peak in the 80–100% range.
+* NY Distribution(Right):The distribution is notably more "spread out" across the axis. Unlike Los Angeles, New York City shows a higher frequency of ZIP codes in the middle-to-lower usage brackets (40–70%), indicating a more significant disparity in access across its boroughs
+* Comparison:
+
+
+
+# Statistical Analysis
+In this study, we are investigating the difference in broadband usage rates between Los Angeles and New York City. We will construct a two-sided hypothesis 
+
+## Parameters of Interest
+
+The parameters of interest are the true mean broadband usage rates:
+
+- $\mu_{LA}$: The true mean broadband usage rate for ZIP codes in Los Angeles
+- $\mu_{NYC}$: The true mean broadband usage rate for ZIP codes in New York City
+
+## Type of Inference
+We used a two-sample $t$-test for independent samples with unequal variances (Welch’s $t$-test) to test for a significant difference between the two population means.
+
+## Assumptions
+$$X = \text{Broadband Usage for Los Angeles ZIP codes} \sim D_X(\mu_{LA}, \sigma_{LA})$$
+$$Y = \text{Broadband Usage for New York City ZIP codes} \sim D_Y(\mu_{NYC}, \sigma_{NYC})$$
+Independence: It is assumed that the two groups (Los Angeles and New York City) are independent of each other. This assumption is satisfied as the data were collected from geographically distinct metropolitan areas.Normality: Given our large sample sizes ($n_{LA} = 281, n_{NYC} = 181$), the $t$-test is robust to deviations from normality via the Central Limit Theorem.
+
+Normality: 
+
+## Hypothesis
+
+$$H_0: \mu_{LA} - \mu_{NYC} = 0$$
+$$H_{a}: \mu_{LA} - \mu_{NYC} \neq 0$$
+
+## Test Statistic and Null Distribution
+
+The test statistic is calculated as:$$t = \frac{\bar{x} - \bar{y}}{\sqrt{\frac{s_x^2}{n_x} + \frac{s_y^2}{n_y}}}$$
+
+```{r calculations, echo = FALSE}
+
+results <- t.test(usage ~ Location, data = cleaned_data, alternative = "two.sided")
+
+t_stat <- round(results$statistic, 5)
+df_w <- round(results$parameter, 5)
+p_val <- format(results$p.value, scientific = TRUE)
+
+
+```
+
+## Results
+
+```{r, echo = FALSE}
+t_stat
+df_w
+p_val
+```
+
+
+
+
+## Interpretation: Comparing p-value with alpha = 0.05
+
+**Reject the null hypothesis**: We have enough evidence that the average broadband usage in Los Angeles is significantly different from the average broadband usage in New York City. (p-value = $6.95 \times 10^{-6}$, two-sided test)
+
+
+## Confidence Interval
+
+```{r, echo = FALSE}
+cat("95% Confidence Interval:", results$conf.int[1], "to", results$conf.int[2])
+t.test(usage ~ Location, data = cleaned_data, alternative = "two.sided")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
